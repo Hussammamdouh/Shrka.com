@@ -6,6 +6,8 @@ const { sendMail } = require('../utils/mailer.util');
 const AuditLog = require('../models/auditLog.model');
 const BlacklistedToken = require('../models/blacklistedToken.model');
 const crypto = require('crypto');
+const logger = require('../utils/logger.util');
+const { randomUUID } = require('crypto');
 
 const logEvent = async (user, event, req, meta = {}) => {
   await AuditLog.create({
@@ -75,27 +77,39 @@ exports.login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
+    logger.warn(`Failed login attempt for email: ${email} from IP: ${req.ip} UA: ${req.headers['user-agent']}`);
     await logEvent(null, 'login_failed', req, { email });
-    throw new AppError('Invalid credentials', 401);
+    throw new AppError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
   }
-  if (user.isBlocked) throw new AppError('Account is blocked', 403);
-  if (user.lockUntil && user.lockUntil > Date.now()) throw new AppError('Account is locked. Try again later.', 403);
-  if (!user.emailVerified) throw new AppError('Please verify your email before logging in.', 403);
+  if (user.isBlocked) {
+    logger.warn(`Blocked user login attempt: ${email} from IP: ${req.ip}`);
+    throw new AppError('Account is blocked', 403, 'ACCOUNT_BLOCKED');
+  }
+  if (user.lockUntil && user.lockUntil > Date.now()) {
+    logger.warn(`Locked user login attempt: ${email} from IP: ${req.ip}`);
+    throw new AppError('Account is locked. Try again later.', 403, 'ACCOUNT_LOCKED');
+  }
+  if (!user.emailVerified) {
+    logger.warn(`Unverified email login attempt: ${email} from IP: ${req.ip}`);
+    throw new AppError('Please verify your email before logging in.', 403, 'EMAIL_NOT_VERIFIED');
+  }
   if (!(await comparePassword(password, user.password))) {
     user.loginAttempts += 1;
     if (user.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
       user.lockUntil = Date.now() + LOCK_TIME;
       await logEvent(user, 'account_locked', req);
+      logger.warn(`Account locked due to failed attempts: ${email} from IP: ${req.ip}`);
     }
     await user.save();
     await logEvent(user, 'login_failed', req);
-    throw new AppError('Invalid credentials', 401);
+    logger.warn(`Failed login attempt for email: ${email} from IP: ${req.ip}`);
+    throw new AppError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
   }
   user.loginAttempts = 0;
   user.lockUntil = undefined;
-  // Session management: create a new session
+  // Session management: create a new session with UUID refresh token
   const accessToken = signAccessToken({ id: user._id });
-  const refreshToken = signRefreshToken({ id: user._id });
+  const refreshToken = randomUUID();
   user.sessions.push({ refreshToken, userAgent: req.headers['user-agent'] });
   user.refreshToken = refreshToken;
   await user.save();
@@ -106,24 +120,33 @@ exports.login = catchAsync(async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   await logEvent(user, 'login', req);
-  res.json({ accessToken, user: { id: user._id, name: user.name, email: user.email, roles: user.roles } });
+  logger.info(`User login: [REDACTED] from IP: ${req.ip}`);
+  res.json({ success: true, data: { accessToken, user: { id: user._id, name: user.name, email: user.email, roles: user.roles } }, message: 'Login successful' });
 });
 
 exports.refresh = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
-  if (!refreshToken) throw new AppError('No refresh token', 401);
+  if (!refreshToken) {
+    logger.warn(`Refresh token missing from IP: ${req.ip}`);
+    throw new AppError('No refresh token', 401);
+  }
   // Check blacklist
   const blacklisted = await BlacklistedToken.findOne({ token: refreshToken });
-  if (blacklisted) throw new AppError('Token is blacklisted', 401);
-  const payload = verifyRefreshToken(refreshToken);
-  const user = await User.findById(payload.id);
-  if (!user || user.refreshToken !== refreshToken) throw new AppError('Invalid refresh token', 401);
+  if (blacklisted) {
+    logger.warn(`Blacklisted refresh token used from IP: ${req.ip}`);
+    throw new AppError('Token is blacklisted', 401);
+  }
+  const user = await User.findOne({ 'sessions.refreshToken': refreshToken });
+  if (!user) {
+    logger.warn(`Invalid refresh token used from IP: ${req.ip}`);
+    throw new AppError('Invalid refresh token', 401);
+  }
+  // Rotate refresh token
   const newAccessToken = signAccessToken({ id: user._id });
-  const newRefreshToken = signRefreshToken({ id: user._id });
-  user.refreshToken = newRefreshToken;
-  // Update session
+  const newRefreshToken = randomUUID();
   const session = user.sessions.find(s => s.refreshToken === refreshToken);
   if (session) session.refreshToken = newRefreshToken;
+  user.refreshToken = newRefreshToken;
   await user.save();
   res.cookie('refreshToken', newRefreshToken, {
     httpOnly: true,
@@ -132,20 +155,21 @@ exports.refresh = catchAsync(async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   await logEvent(user, 'refresh_token', req);
+  logger.info(`Refresh token rotated for user: ${user.email} from IP: ${req.ip}`);
   res.json({ accessToken: newAccessToken });
 });
 
 exports.logout = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
   if (refreshToken) {
-    const user = await User.findOne({ refreshToken });
+    const user = await User.findOne({ 'sessions.refreshToken': refreshToken });
     if (user) {
-      // Blacklist the token
       await BlacklistedToken.create({ token: refreshToken, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
-      user.refreshToken = null;
       user.sessions = user.sessions.filter(s => s.refreshToken !== refreshToken);
+      user.refreshToken = null;
       await user.save();
       await logEvent(user, 'logout', req);
+      logger.info(`User logout: ${user.email} from IP: ${req.ip}`);
     }
     res.clearCookie('refreshToken');
   }
@@ -192,6 +216,7 @@ exports.revokeSession = catchAsync(async (req, res) => {
   user.sessions = user.sessions.filter(s => s.refreshToken !== refreshToken);
   await BlacklistedToken.create({ token: refreshToken, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
   await user.save();
+  logger.info(`Session revoked for user: ${user.email} from IP: ${req.ip}`);
   res.json({ message: 'Session revoked.' });
 });
 

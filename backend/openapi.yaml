@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: Shrka.com API
+  version: 1.0.0
+  description: API documentation for Shrka.com backend
+servers:
+  - url: http://localhost:5000
+paths:
+  /api/user/profile:
+    get:
+      summary: Get user profile
+      responses:
+        '200':
+          description: Success
+  /api/company:
+    post:
+      summary: Create company
+      responses:
+        '201':
+          description: Created
+  /api/company/my:
+    get:
+      summary: List companies for user
+      responses:
+        '200':
+          description: Success
+  /api/company/{companyId}/invite:
+    post:
+      summary: Invite user to company
+      responses:
+        '200':
+          description: Success
+  /api/company/{companyId}/assign-role:
+    post:
+      summary: Assign role to user in company
+      responses:
+        '200':
+          description: Success
+  /api/company/{companyId}/remove-user:
+    post:
+      summary: Remove user from company
+      responses:
+        '200':
+          description: Success
+  /api/company/{companyId}/join-request/{requestId}/approve:
+    post:
+      summary: Approve join request
+      responses:
+        '200':
+          description: Success
+  /api/company/{companyId}/join-request/{requestId}/reject:
+    post:
+      summary: Reject join request
+      responses:
+        '200':
+          description: Success 

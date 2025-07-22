@@ -1,6 +1,6 @@
 const express = require('express');
-const cors = require('cors');
 const helmet = require('helmet');
+const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const { CORS_ORIGIN } = require('./config/env');
@@ -9,7 +9,7 @@ const logger = require('./utils/logger.util');
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet()); // Ensure helmet is first
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());

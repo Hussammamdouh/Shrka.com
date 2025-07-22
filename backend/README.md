@@ -11,9 +11,11 @@ A scalable, secure, multi-tenant Sales Tracking Platform backend built with Node
 - [Environment Variables](#environment-variables)
 - [Running the Server](#running-the-server)
 - [API Endpoints](#api-endpoints)
+- [API Response Format](#api-response-format)
 - [Authentication Flow](#authentication-flow)
 - [Testing](#testing)
 - [Contribution](#contribution)
+- [Environment-Specific Config & Production Readiness](#environment-specific-config--production-readiness)
 
 ---
 
@@ -30,6 +32,8 @@ Shrka.com is a multi-tenant sales tracking platform that allows any sales compan
 - Admin/IT support user management
 - Audit logging for security events
 - Production-ready logging (Winston)
+- **Consistent API response format and error codes**
+- **Pagination and filtering for list endpoints**
 
 ## Tech Stack
 - Node.js, Express.js
@@ -51,6 +55,7 @@ backend/
   services/         # (Optional) business logic
   utils/            # Helpers (logger, mailer, tokens, etc.)
   validators/       # Joi schemas
+  tests/            # Jest test files
   app.js            # Express app
   server.js         # Entry point
   README.md         # This file
@@ -109,6 +114,12 @@ EMAIL_FROM="Shrka.com <your@email.com>"
 - `POST /api/auth/verify-reset-code` — Verify password reset code
 - `POST /api/auth/reset-password` — Reset password
 
+### Company
+- `POST /api/company` — Create new company
+- `GET /api/company/my` — List companies for user (supports `?page`, `?limit`, `?search`)
+- `POST /api/company/:companyId/invite` — Invite user by email or ID
+- `POST /api/company/:companyId/assign-role` — Assign role to user in company
+
 ### Sessions
 - `GET /api/auth/sessions` — List active sessions
 - `POST /api/auth/sessions/revoke` — Revoke a session
@@ -117,6 +128,29 @@ EMAIL_FROM="Shrka.com <your@email.com>"
 - `GET /api/auth/admin/users` — List all users
 - `POST /api/auth/admin/users/:userId/block` — Block user
 - `POST /api/auth/admin/users/:userId/unblock` — Unblock user
+
+## API Response Format
+All API responses follow a consistent structure:
+
+**Success:**
+```json
+{
+  "success": true,
+  "data": { ... },
+  "message": "Descriptive message"
+}
+```
+
+**Error:**
+```json
+{
+  "success": false,
+  "data": null,
+  "message": "Error message",
+  "errorCode": "ERROR_CODE"
+}
+```
+- `errorCode` is a string for frontend error handling (e.g., `VALIDATION_ERROR`, `INVALID_CREDENTIALS`, `ACCOUNT_BLOCKED`).
 
 ## Authentication Flow
 1. **Register:** User registers and receives a verification code via email.
@@ -127,15 +161,30 @@ EMAIL_FROM="Shrka.com <your@email.com>"
 6. **Session Management:** User can view and revoke sessions.
 7. **Admin/IT Support:** Can manage users (block/unblock/list).
 
+## Pagination & Filtering
+- List endpoints (e.g., `/api/company/my`) support `?page`, `?limit`, and `?search` query parameters.
+- Example: `GET /api/company/my?page=2&limit=5&search=Acme`
+
 ## Testing
 - Use the provided Postman collection (`ShrkaAuth.postman_collection.json`) to test all endpoints.
 - Ensure your `.env` is configured for email sending to test verification and password reset.
+- Jest test files are in the `tests/` directory.
 
 ## Contribution
 - Fork the repo and create a feature branch.
 - Follow the existing code style and structure.
 - Write clear commit messages.
 - Submit a pull request with a description of your changes.
+
+## Environment-Specific Config & Production Readiness
+- All sensitive config (DB, JWT, email) is loaded from `.env` and never committed.
+- Use `.env.example` as a template for your environment variables.
+- In production, always:
+  - Use HTTPS
+  - Set cookies as `secure`
+  - Set appropriate CORS origins
+  - Use strong secrets for JWT and email
+- Logging is set to avoid leaking sensitive data.
 
 ---
 
