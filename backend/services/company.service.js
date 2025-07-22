@@ -3,6 +3,7 @@ const User = require('../models/user.model');
 const UserCompanyRole = require('../models/userCompanyRole.model');
 const AuditLog = require('../models/auditLog.model');
 const { AppError } = require('../utils/error.util');
+const { ROLES } = require('../constants/roles');
 
 exports.createCompany = async ({ name, industry, createdBy }) => {
   const company = await Company.create({ name, industry, createdBy });
@@ -24,12 +25,20 @@ exports.inviteUser = async ({ companyId, email, userId, role, invitedBy }) => {
 };
 
 exports.assignRole = async ({ companyId, userId, role, assignedBy }) => {
+  const assignerRole = await UserCompanyRole.findOne({ userId: assignedBy, companyId });
+  if (!assignerRole) throw new AppError('Assigner not in company', 403, 'FORBIDDEN');
+  if (role === ROLES.ADMIN && assignerRole.role !== ROLES.SUPERADMIN) {
+    throw new AppError('Only Superadmin can assign Admin', 403, 'FORBIDDEN');
+  }
+  if ((role === ROLES.SALES_MANAGER || role === ROLES.SUPERVISOR) && assignerRole.role !== ROLES.ADMIN) {
+    throw new AppError('Only Admin can assign Sales Manager or Supervisor', 403, 'FORBIDDEN');
+  }
   const userRole = await UserCompanyRole.findOneAndUpdate(
     { userId, companyId },
     { role },
     { new: true }
   );
-  if (!userRole) throw new AppError('User not in company', 404);
+  if (!userRole) throw new AppError('User not in company', 404, 'USER_NOT_IN_COMPANY');
   await AuditLog.logAudit({ action: 'role_assigned', actorId: assignedBy, companyId, targetId: userId, metadata: { role } });
   return userRole;
 };

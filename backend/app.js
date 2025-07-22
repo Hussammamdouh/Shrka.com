@@ -20,6 +20,11 @@ app.use(morgan('dev', {
 }));
 
 app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/subscription', require('./routes/subscription.routes'));
+app.use('/api/join-request', require('./routes/joinRequest.routes'));
+app.use('/api/user', require('./routes/user.routes'));
+app.use('/api/company', require('./routes/company.routes'));
+// TODO: Add checkCompanySubscription to all business endpoints (company, leads, products, etc.)
 
 app.use(errorHandler);
 

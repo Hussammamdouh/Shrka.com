@@ -11,5 +11,7 @@ const joinRequestSchema = new mongoose.Schema({
 });
 
 joinRequestSchema.index({ userId: 1, companyId: 1 }, { unique: true });
+joinRequestSchema.index({ companyId: 1 });
+joinRequestSchema.index({ userId: 1 });
 
 module.exports = mongoose.model('JoinRequest', joinRequestSchema); 

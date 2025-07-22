@@ -40,7 +40,7 @@ exports.register = catchAsync(async (req, res) => {
     'Verify your email',
     `<p>Your verification code is: <b>${code}</b></p><p>This code expires in 15 minutes.</p>`
   );
-  await logEvent(user, 'register', req);
+  await AuditLog.logAudit({ action: 'user_registered', actorId: user._id });
   res.status(201).json({ message: 'User registered. Please verify your email.' });
 });
 
@@ -52,7 +52,7 @@ exports.verifyEmail = catchAsync(async (req, res) => {
   user.emailVerificationCode = undefined;
   user.emailVerificationExpires = undefined;
   await user.save();
-  await logEvent(user, 'email_verified', req);
+  await AuditLog.logAudit({ action: 'email_verified', actorId: user._id });
   res.json({ message: 'Email verified. You can now log in.' });
 });
 
@@ -78,30 +78,33 @@ exports.login = catchAsync(async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     logger.warn(`Failed login attempt for email: ${email} from IP: ${req.ip} UA: ${req.headers['user-agent']}`);
-    await logEvent(null, 'login_failed', req, { email });
+    await AuditLog.logAudit({ action: 'login_failed', actorId: null, metadata: { email, ip: req.ip } });
     throw new AppError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
   }
   if (user.isBlocked) {
     logger.warn(`Blocked user login attempt: ${email} from IP: ${req.ip}`);
+    await AuditLog.logAudit({ action: 'login_blocked', actorId: user._id, metadata: { ip: req.ip } });
     throw new AppError('Account is blocked', 403, 'ACCOUNT_BLOCKED');
   }
   if (user.lockUntil && user.lockUntil > Date.now()) {
     logger.warn(`Locked user login attempt: ${email} from IP: ${req.ip}`);
+    await AuditLog.logAudit({ action: 'login_locked', actorId: user._id, metadata: { ip: req.ip } });
     throw new AppError('Account is locked. Try again later.', 403, 'ACCOUNT_LOCKED');
   }
   if (!user.emailVerified) {
     logger.warn(`Unverified email login attempt: ${email} from IP: ${req.ip}`);
+    await AuditLog.logAudit({ action: 'login_unverified', actorId: user._id, metadata: { ip: req.ip } });
     throw new AppError('Please verify your email before logging in.', 403, 'EMAIL_NOT_VERIFIED');
   }
   if (!(await comparePassword(password, user.password))) {
     user.loginAttempts += 1;
     if (user.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
       user.lockUntil = Date.now() + LOCK_TIME;
-      await logEvent(user, 'account_locked', req);
+      await AuditLog.logAudit({ action: 'account_locked', actorId: user._id, metadata: { ip: req.ip } });
       logger.warn(`Account locked due to failed attempts: ${email} from IP: ${req.ip}`);
     }
     await user.save();
-    await logEvent(user, 'login_failed', req);
+    await AuditLog.logAudit({ action: 'login_failed', actorId: user._id, metadata: { ip: req.ip } });
     logger.warn(`Failed login attempt for email: ${email} from IP: ${req.ip}`);
     throw new AppError('Invalid credentials', 401, 'INVALID_CREDENTIALS');
   }
@@ -119,7 +122,7 @@ exports.login = catchAsync(async (req, res) => {
     sameSite: 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
-  await logEvent(user, 'login', req);
+  await AuditLog.logAudit({ action: 'user_login', actorId: user._id, metadata: { ip: req.ip } });
   logger.info(`User login: [REDACTED] from IP: ${req.ip}`);
   res.json({ success: true, data: { accessToken, user: { id: user._id, name: user.name, email: user.email, roles: user.roles } }, message: 'Login successful' });
 });
@@ -128,17 +131,20 @@ exports.refresh = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
   if (!refreshToken) {
     logger.warn(`Refresh token missing from IP: ${req.ip}`);
+    await AuditLog.logAudit({ action: 'refresh_failed', actorId: null, metadata: { ip: req.ip } });
     throw new AppError('No refresh token', 401);
   }
   // Check blacklist
   const blacklisted = await BlacklistedToken.findOne({ token: refreshToken });
   if (blacklisted) {
     logger.warn(`Blacklisted refresh token used from IP: ${req.ip}`);
+    await AuditLog.logAudit({ action: 'refresh_failed_blacklisted', actorId: null, metadata: { ip: req.ip } });
     throw new AppError('Token is blacklisted', 401);
   }
   const user = await User.findOne({ 'sessions.refreshToken': refreshToken });
   if (!user) {
     logger.warn(`Invalid refresh token used from IP: ${req.ip}`);
+    await AuditLog.logAudit({ action: 'refresh_failed_invalid', actorId: null, metadata: { ip: req.ip } });
     throw new AppError('Invalid refresh token', 401);
   }
   // Rotate refresh token
@@ -154,7 +160,7 @@ exports.refresh = catchAsync(async (req, res) => {
     sameSite: 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
-  await logEvent(user, 'refresh_token', req);
+  await AuditLog.logAudit({ action: 'token_refreshed', actorId: user._id, metadata: { ip: req.ip } });
   logger.info(`Refresh token rotated for user: ${user.email} from IP: ${req.ip}`);
   res.json({ accessToken: newAccessToken });
 });

@@ -13,6 +13,8 @@ A scalable, secure, multi-tenant Sales Tracking Platform backend built with Node
 - [API Endpoints](#api-endpoints)
 - [API Response Format](#api-response-format)
 - [Authentication Flow](#authentication-flow)
+- [Pagination & Filtering](#pagination--filtering)
+- [Subscription & Role Hierarchy (Phase 3)](#subscription--role-hierarchy-phase-3)
 - [Testing](#testing)
 - [Contribution](#contribution)
 - [Environment-Specific Config & Production Readiness](#environment-specific-config--production-readiness)
@@ -32,8 +34,10 @@ Shrka.com is a multi-tenant sales tracking platform that allows any sales compan
 - Admin/IT support user management
 - Audit logging for security events
 - Production-ready logging (Winston)
-- **Consistent API response format and error codes**
-- **Pagination and filtering for list endpoints**
+- Consistent API response format and error codes
+- Pagination and filtering for list endpoints
+- **Subscription enforcement and join request flow**
+- **Fine-grained permission checks and role hierarchy**
 
 ## Tech Stack
 - Node.js, Express.js
@@ -103,7 +107,8 @@ EMAIL_FROM="Shrka.com <your@email.com>"
   ```
 
 ## API Endpoints
-### Auth
+
+### **Authentication & User**
 - `POST /api/auth/register` — Register new user
 - `POST /api/auth/verify-email` — Verify email with code
 - `POST /api/auth/resend-verification` — Resend verification code
@@ -113,21 +118,45 @@ EMAIL_FROM="Shrka.com <your@email.com>"
 - `POST /api/auth/forgot-password` — Request password reset code
 - `POST /api/auth/verify-reset-code` — Verify password reset code
 - `POST /api/auth/reset-password` — Reset password
+- `GET /api/user/profile` — Get user profile
+- `PUT /api/user/profile` — Update user profile
+- `PUT /api/user/profile/password` — Change password
+- `PUT /api/user/profile/avatar` — Update avatar
 
-### Company
+### **Company Management**
 - `POST /api/company` — Create new company
 - `GET /api/company/my` — List companies for user (supports `?page`, `?limit`, `?search`)
 - `POST /api/company/:companyId/invite` — Invite user by email or ID
 - `POST /api/company/:companyId/assign-role` — Assign role to user in company
+- `POST /api/company/:companyId/remove-user` — Remove user from company
+- `PUT /api/company/:companyId/settings` — Update company settings
+- `PUT /api/company/:companyId` — Update company
+- `DELETE /api/company/:companyId` — Delete company
+- `GET /api/company/:companyId/users` — List users in a company (paginated)
+- `GET /api/company/:companyId/invites` — List join requests/invites for a company (paginated)
 
-### Sessions
+### **Join Requests**
+- `POST /api/join-request` — Submit join request to a company
+- `GET /api/join-request/my` — List my join requests
+- `POST /api/company/:companyId/join-request/:requestId/approve` — Approve join request
+- `POST /api/company/:companyId/join-request/:requestId/reject` — Reject join request
+
+### **Subscription**
+- `POST /api/subscription/start` — Start a new subscription (Superadmin only)
+- `GET /api/subscription/status/:companyId` — Get subscription status
+- `GET /api/subscription` — List all subscriptions (Superadmin, paginated)
+
+### **Session Management**
 - `GET /api/auth/sessions` — List active sessions
 - `POST /api/auth/sessions/revoke` — Revoke a session
 
-### Admin/IT Support
+### **Admin/IT Support**
 - `GET /api/auth/admin/users` — List all users
 - `POST /api/auth/admin/users/:userId/block` — Block user
 - `POST /api/auth/admin/users/:userId/unblock` — Unblock user
+
+### **TODO: Leads, Products, Forms, Analytics**
+- Endpoints for these modules will be added in future phases.
 
 ## API Response Format
 All API responses follow a consistent structure:
@@ -162,29 +191,29 @@ All API responses follow a consistent structure:
 7. **Admin/IT Support:** Can manage users (block/unblock/list).
 
 ## Pagination & Filtering
-- List endpoints (e.g., `/api/company/my`) support `?page`, `?limit`, and `?search` query parameters.
+- List endpoints (e.g., `/api/company/my`, `/api/company/:companyId/users`) support `?page`, `?limit`, and `?search` query parameters.
 - Example: `GET /api/company/my?page=2&limit=5&search=Acme`
 
-## Testing
-- Use the provided Postman collection (`ShrkaAuth.postman_collection.json`) to test all endpoints.
-- Ensure your `.env` is configured for email sending to test verification and password reset.
-- Jest test files are in the `tests/` directory.
+## Subscription & Role Hierarchy (Phase 3)
 
-## Contribution
-- Fork the repo and create a feature branch.
-- Follow the existing code style and structure.
-- Write clear commit messages.
-- Submit a pull request with a description of your changes.
+### Subscription System
+- Companies must have an active subscription to access core features.
+- Only Superadmins can start or manage subscriptions.
+- Endpoints:
+  - `POST /api/subscription/start` — Start a new subscription (Superadmin only)
+  - `GET /api/subscription/status/:companyId` — Get subscription status
+  - `GET /api/subscription` — List all subscriptions (Superadmin, paginated)
+- Middleware: `checkCompanySubscription(companyId)` blocks actions if subscription is inactive.
 
-## Environment-Specific Config & Production Readiness
-- All sensitive config (DB, JWT, email) is loaded from `.env` and never committed.
-- Use `.env.example` as a template for your environment variables.
-- In production, always:
-  - Use HTTPS
-  - Set cookies as `secure`
-  - Set appropriate CORS origins
-  - Use strong secrets for JWT and email
-- Logging is set to avoid leaking sensitive data.
+### Role & Permission Hierarchy
+- Roles: Superadmin, Admin, Sales Manager, Supervisor, Salesman
+- Each role has a `level` (1–5) and optional `permissions` overrides.
+- Only Superadmin can assign Admin; only Admin can assign Sales Manager/Supervisor.
+- Middleware:
+  - `checkCompanyRole(companyId, role)` — Checks user role in company
+  - `checkRoleLevel(companyId, role, minLevel)` — Checks user role and minimum level
+  - `checkPermission(companyId, permission)` — Checks if user has a specific permission in company
+- All role/permission logic uses enums/constants from `constants/roles.js`.
 
 ---
 
