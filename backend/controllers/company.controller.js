@@ -8,6 +8,18 @@ exports.createCompany = catchAsync(async (req, res) => {
   const { error } = createCompanySchema.validate(req.body);
   if (error) throw new AppError(error.details[0].message, 400, 'VALIDATION_ERROR');
   const company = await companyService.createCompany({ ...req.body, createdBy: req.user._id });
+  // Assign creator as Superadmin if not already assigned
+  const existingRole = await UserCompanyRole.findOne({
+    userId: req.user._id,
+    companyId: company._id
+  });
+  if (!existingRole) {
+    await UserCompanyRole.create({
+      userId: req.user._id,
+      companyId: company._id,
+      role: 'Superadmin'
+    });
+  }
   res.status(201).json({ success: true, data: company, message: 'Company created' });
 });
 
