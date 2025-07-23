@@ -7,6 +7,7 @@ const userCompanyRoleSchema = new mongoose.Schema({
   role: { type: String, enum: Object.values(ROLES), required: true },
   level: { type: Number, default: 1 },
   permissions: [{ type: String, enum: PERMISSIONS }],
+  lastAssignedAt: { type: Date },
 }, { timestamps: true });
 
 userCompanyRoleSchema.index({ userId: 1, companyId: 1 }, { unique: true });

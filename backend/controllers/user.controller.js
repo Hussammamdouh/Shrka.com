@@ -15,17 +15,7 @@ exports.updateProfile = catchAsync(async (req, res) => {
   res.json({ success: true, data: user, message: 'Profile updated' });
 });
 
-exports.changePassword = catchAsync(async (req, res) => {
-  const { oldPassword, newPassword } = req.body;
-  const user = await User.findById(req.user._id);
-  if (!(await comparePassword(oldPassword, user.password))) {
-    throw new AppError('Old password incorrect', 400, 'OLD_PASSWORD_INCORRECT');
-  }
-  user.password = await hashPassword(newPassword);
-  await user.save();
-  await AuditLog.logAudit({ action: 'password_changed', actorId: req.user._id });
-  res.json({ success: true, data: null, message: 'Password changed' });
-});
+exports.changePassword = require('./auth.controller').changePassword;
 
 exports.updateAvatar = catchAsync(async (req, res) => {
   const { avatarUrl } = req.body;

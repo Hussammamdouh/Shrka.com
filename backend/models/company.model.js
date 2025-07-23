@@ -8,7 +8,8 @@ const companySchema = new mongoose.Schema({
   logo: { type: String },
   address: { type: String },
   settings: { type: Object },
-  metadata: { type: Object }
+  metadata: { type: Object },
+  isActive: { type: Boolean, default: true }
 }, { timestamps: { createdAt: true, updatedAt: false } });
 
 companySchema.index({ createdBy: 1 });

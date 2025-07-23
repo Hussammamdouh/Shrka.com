@@ -5,7 +5,7 @@ const { requireAuth } = require('../middlewares/auth.middleware');
 const checkCompanyRole = require('../middlewares/checkCompanyRole.middleware');
 const checkRoleLevel = require('../middlewares/checkRoleLevel.middleware');
 const { ROLES } = require('../constants/roles');
-const { createCompanySchema, inviteUserSchema, assignRoleSchema } = require('../validators/company.validator');
+const { createCompanySchema, inviteUserSchema, assignRoleSchema, updateSettingsSchema } = require('../validators/company.validator');
 const validate = require('../middlewares/validate.middleware');
 
 router.post('/', requireAuth, validate(createCompanySchema), companyController.createCompany);
@@ -15,7 +15,7 @@ router.post('/:companyId/assign-role', requireAuth, checkCompanyRole('companyId'
 router.put('/:companyId', requireAuth, checkCompanyRole('companyId', 'Superadmin'), companyController.updateCompany);
 router.delete('/:companyId', requireAuth, checkCompanyRole('companyId', 'Superadmin'), companyController.deleteCompany);
 router.post('/:companyId/remove-user', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), companyController.removeUser);
-router.put('/:companyId/settings', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), companyController.updateSettings);
+router.put('/:companyId/settings', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), validate(updateSettingsSchema), companyController.updateSettings);
 router.post('/:companyId/join-request/:requestId/approve', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), companyController.approveJoinRequest);
 router.post('/:companyId/join-request/:requestId/reject', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), companyController.rejectJoinRequest);
 router.post('/:companyId/users', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), companyController.addUserToCompany);
@@ -23,5 +23,8 @@ router.get('/:companyId/users', requireAuth, checkCompanyRole('companyId', 'Supe
 router.get('/:companyId/invites', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), companyController.listCompanyInvites);
 router.get('/:companyId', requireAuth, companyController.getCompanyById);
 router.get('/', requireAuth, checkRoleLevel('companyId', ROLES.SUPERADMIN, 5), companyController.listAllCompanies);
+router.put('/:companyId/users/:userId/permissions', requireAuth, checkCompanyRole('companyId', 'Superadmin', 'Admin'), companyController.updateUserPermissions);
+router.post('/:companyId/deactivate', requireAuth, checkCompanyRole('companyId', 'Superadmin'), companyController.deactivateCompany);
+router.post('/:companyId/reactivate', requireAuth, checkCompanyRole('companyId', 'Superadmin'), companyController.reactivateCompany);
 
 module.exports = router; 

@@ -16,4 +16,11 @@ const assignRoleSchema = Joi.object({
   userId: Joi.string().required(),
   role: Joi.string().valid('Admin', 'Sales Manager', 'Supervisor', 'Salesman').required(),
 });
-module.exports = { createCompanySchema, inviteUserSchema, assignRoleSchema }; 
+
+const updateSettingsSchema = Joi.object({
+  logo: Joi.string().uri().optional(),
+  address: Joi.string().max(255).optional(),
+  settings: Joi.object().optional(),
+  metadata: Joi.object().optional(),
+});
+module.exports = { createCompanySchema, inviteUserSchema, assignRoleSchema, updateSettingsSchema }; 

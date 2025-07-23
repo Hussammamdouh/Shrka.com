@@ -20,6 +20,7 @@ router.post('/resend-verification', validate(forgotPasswordSchema), authControll
 router.get('/admin/users', requireAuth, requireRole('it_support'), authController.listUsers);
 router.post('/admin/users/:userId/block', requireAuth, requireRole('it_support'), authController.blockUser);
 router.post('/admin/users/:userId/unblock', requireAuth, requireRole('it_support'), authController.unblockUser);
+router.post('/admin/users/:userId/unlock', requireAuth, requireRole('it_support'), authController.adminUnlockUser);
 
 // Session management
 router.get('/sessions', requireAuth, authController.listSessions);

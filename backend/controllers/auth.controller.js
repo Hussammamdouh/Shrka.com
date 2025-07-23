@@ -22,8 +22,14 @@ const logEvent = async (user, event, req, meta = {}) => {
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCK_TIME = 15 * 60 * 1000; // 15 minutes
 
+const passwordPolicy = password => {
+  // At least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
+};
+
 exports.register = catchAsync(async (req, res) => {
   const { name, email, password, phone } = req.body;
+  if (!passwordPolicy(password)) throw new AppError('Password does not meet policy requirements', 400, 'WEAK_PASSWORD');
   if (await User.findOne({ email })) throw new AppError('Email already in use', 409);
   const hashed = await hashPassword(password);
   const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -31,6 +37,7 @@ exports.register = catchAsync(async (req, res) => {
     name,
     email,
     password: hashed,
+    passwordHistory: [{ password: hashed }],
     phone,
     emailVerificationCode: code,
     emailVerificationExpires: Date.now() + 15 * 60 * 1000,
@@ -113,7 +120,7 @@ exports.login = catchAsync(async (req, res) => {
   // Session management: create a new session with UUID refresh token
   const accessToken = signAccessToken({ id: user._id });
   const refreshToken = randomUUID();
-  user.sessions.push({ refreshToken, userAgent: req.headers['user-agent'] });
+  user.sessions.push({ refreshToken, userAgent: req.headers['user-agent'], ip: req.ip });
   user.refreshToken = refreshToken;
   await user.save();
   res.cookie('refreshToken', refreshToken, {
@@ -209,19 +216,34 @@ exports.unblockUser = catchAsync(async (req, res) => {
   res.json({ message: 'User unblocked.' });
 });
 
+// Admin/IT Support: Unlock user account
+exports.adminUnlockUser = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const user = await User.findById(userId);
+  if (!user) throw new AppError('User not found', 404);
+  user.lockUntil = undefined;
+  user.loginAttempts = 0;
+  await user.save();
+  await AuditLog.logAudit({ action: 'account_unlocked', actorId: req.user._id, targetId: user._id });
+  res.json({ message: 'User account unlocked.' });
+});
+
 // Session management: List sessions
 exports.listSessions = catchAsync(async (req, res) => {
   const user = await User.findById(req.user._id);
-  res.json(user.sessions || []);
+  res.json({ success: true, data: user.sessions || [], message: 'Sessions fetched' });
 });
 
 // Session management: Revoke session
 exports.revokeSession = catchAsync(async (req, res) => {
-  const { refreshToken } = req.body;
+  const { sessionId } = req.body;
   const user = await User.findById(req.user._id);
-  user.sessions = user.sessions.filter(s => s.refreshToken !== refreshToken);
-  await BlacklistedToken.create({ token: refreshToken, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
+  const session = user.sessions.id(sessionId);
+  if (!session) throw new AppError('Session not found', 404);
+  await BlacklistedToken.create({ token: session.refreshToken, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
+  user.sessions.id(sessionId).remove();
   await user.save();
+  await AuditLog.logAudit({ action: 'session_revoked', actorId: req.user._id, metadata: { sessionId } });
   logger.info(`Session revoked for user: ${user.email} from IP: ${req.ip}`);
   res.json({ message: 'Session revoked.' });
 });
@@ -259,4 +281,23 @@ exports.resetPassword = catchAsync(async (req, res) => {
   user.resetPasswordExpires = undefined;
   await user.save();
   res.json({ message: 'Password reset successful. You can now log in.' });
+});
+
+exports.changePassword = catchAsync(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const user = await User.findById(req.user._id);
+  if (!(await comparePassword(oldPassword, user.password))) {
+    throw new AppError('Old password incorrect', 400, 'OLD_PASSWORD_INCORRECT');
+  }
+  if (!passwordPolicy(newPassword)) throw new AppError('Password does not meet policy requirements', 400, 'WEAK_PASSWORD');
+  if (user.passwordHistory && user.passwordHistory.some(h => comparePassword(newPassword, h.password))) {
+    throw new AppError('Cannot reuse previous passwords', 400, 'PASSWORD_REUSE');
+  }
+  const hashed = await hashPassword(newPassword);
+  user.password = hashed;
+  user.passwordHistory = (user.passwordHistory || []).slice(-4); // keep last 4
+  user.passwordHistory.push({ password: hashed });
+  await user.save();
+  await AuditLog.logAudit({ action: 'password_changed', actorId: req.user._id });
+  res.json({ success: true, data: null, message: 'Password changed' });
 }); 

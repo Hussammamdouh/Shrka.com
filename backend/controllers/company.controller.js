@@ -87,9 +87,34 @@ exports.updateCompany = catchAsync(async (req, res) => {
   res.json({ success: true, data: company, message: 'Company updated' });
 });
 
+exports.deactivateCompany = catchAsync(async (req, res) => {
+  const company = await require('../models/company.model').findById(req.params.companyId);
+  if (!company) throw new AppError('Company not found', 404, 'COMPANY_NOT_FOUND');
+  if (!company.isActive) throw new AppError('Company already deactivated', 400, 'ALREADY_DEACTIVATED');
+  company.isActive = false;
+  await company.save();
+  await require('../models/auditLog.model').logAudit({ action: 'company_deactivated', actorId: req.user._id, companyId: company._id });
+  res.json({ success: true, data: company, message: 'Company deactivated' });
+});
+
+exports.reactivateCompany = catchAsync(async (req, res) => {
+  const company = await require('../models/company.model').findById(req.params.companyId);
+  if (!company) throw new AppError('Company not found', 404, 'COMPANY_NOT_FOUND');
+  if (company.isActive) throw new AppError('Company already active', 400, 'ALREADY_ACTIVE');
+  company.isActive = true;
+  await company.save();
+  await require('../models/auditLog.model').logAudit({ action: 'company_reactivated', actorId: req.user._id, companyId: company._id });
+  res.json({ success: true, data: company, message: 'Company reactivated' });
+});
+
 exports.deleteCompany = catchAsync(async (req, res) => {
-  const company = await companyService.deleteCompany({ companyId: req.params.companyId, deletedBy: req.user._id });
-  res.json({ success: true, data: company, message: 'Company deleted' });
+  const company = await require('../models/company.model').findById(req.params.companyId);
+  if (!company) throw new AppError('Company not found', 404, 'COMPANY_NOT_FOUND');
+  if (company.isActive) throw new AppError('Deactivate company before deletion', 400, 'DEACTIVATE_FIRST');
+  // Optionally check retention period here
+  await company.deleteOne();
+  await require('../models/auditLog.model').logAudit({ action: 'company_deleted', actorId: req.user._id, companyId: company._id });
+  res.json({ success: true, data: null, message: 'Company deleted' });
 });
 
 exports.removeUser = catchAsync(async (req, res) => {
@@ -98,7 +123,8 @@ exports.removeUser = catchAsync(async (req, res) => {
 });
 
 exports.updateSettings = catchAsync(async (req, res) => {
-  const company = await companyService.updateSettings({ companyId: req.params.companyId, settings: req.body.settings, updatedBy: req.user._id });
+  const company = await companyService.updateSettings({ companyId: req.params.companyId, settings: req.body, updatedBy: req.user._id });
+  await require('../models/auditLog.model').logAudit({ action: 'company_settings_updated', actorId: req.user._id, companyId: req.params.companyId, metadata: req.body });
   res.json({ success: true, data: company, message: 'Company settings updated' });
 });
 
@@ -133,6 +159,29 @@ exports.addUserToCompany = catchAsync(async (req, res) => {
   if (error) throw new AppError(error.details[0].message, 400, 'VALIDATION_ERROR');
   const user = await companyService.inviteUser({ ...req.body, companyId: req.params.companyId, invitedBy: req.user._id });
   res.json({ success: true, data: user, message: 'User added to company' });
+});
+
+exports.updateUserPermissions = catchAsync(async (req, res) => {
+  const { companyId, userId } = req.params;
+  const { permissions } = req.body;
+  const assignerRole = await UserCompanyRole.findOne({ userId: req.user._id, companyId });
+  if (!assignerRole || (assignerRole.role !== 'Superadmin' && assignerRole.role !== 'Admin')) {
+    throw new AppError('Only Superadmin or Admin can update permissions', 403, 'FORBIDDEN');
+  }
+  const userRole = await UserCompanyRole.findOneAndUpdate(
+    { userId, companyId },
+    { permissions },
+    { new: true }
+  );
+  if (!userRole) throw new AppError('User not in company', 404, 'USER_NOT_IN_COMPANY');
+  await require('../models/auditLog.model').logAudit({
+    action: 'permissions_updated',
+    actorId: req.user._id,
+    companyId,
+    targetId: userId,
+    metadata: { permissions }
+  });
+  res.json({ success: true, data: userRole, message: 'User permissions updated' });
 });
 
 // TODO: approveJoinRequest, rejectJoinRequest for Phase 3 

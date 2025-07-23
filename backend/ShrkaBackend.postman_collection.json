@@ -2,12 +2,168 @@
   "info": {
     "name": "Shrka.com Backend API",
     "_postman_id": "shrka-backend-collection-001",
-    "description": "Test all authentication, user, company, join request, and subscription endpoints for Shrka.com backend. Grouped for easy testing.",
+    "description": "Test all authentication, user, company, join request, subscription, funnel, form, lead, and analytics endpoints for Shrka.com backend. Grouped for easy testing.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Authentication & User",
+      "name": "Superadmin",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users"] } } },
+        { "name": "Get User by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Update User Role", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<userId>\",\n  \"role\": \"admin\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Get All Companies", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies"] } } },
+        { "name": "Get Company by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Update Company", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Company Name\",\n  \"description\": \"Updated Description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Delete Company", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Get All Join Requests", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests"] } } },
+        { "name": "Get Join Request by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Approve Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"approved\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Reject Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"rejected\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Delete Join Request", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Get All Subscriptions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions"] } } },
+        { "name": "Get Subscription by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Update Subscription", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"plan\": \"premium\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Cancel Subscription", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Get All Sessions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions"] } } },
+        { "name": "Get Session by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "Update Session", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "End Session", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users"] } } },
+        { "name": "Get User by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Update User Role", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<userId>\",\n  \"role\": \"admin\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Get All Companies", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies"] } } },
+        { "name": "Get Company by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Update Company", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Company Name\",\n  \"description\": \"Updated Description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Delete Company", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Get All Join Requests", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests"] } } },
+        { "name": "Get Join Request by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Approve Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"approved\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Reject Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"rejected\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Delete Join Request", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Get All Subscriptions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions"] } } },
+        { "name": "Get Subscription by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Update Subscription", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"plan\": \"premium\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Cancel Subscription", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Get All Sessions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions"] } } },
+        { "name": "Get Session by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "Update Session", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "End Session", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } }
+      ]
+    },
+    {
+      "name": "Supervisor",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users"] } } },
+        { "name": "Get User by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Update User Role", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<userId>\",\n  \"role\": \"admin\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Get All Companies", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies"] } } },
+        { "name": "Get Company by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Update Company", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Company Name\",\n  \"description\": \"Updated Description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Delete Company", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Get All Join Requests", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests"] } } },
+        { "name": "Get Join Request by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Approve Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"approved\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Reject Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"rejected\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Delete Join Request", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Get All Subscriptions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions"] } } },
+        { "name": "Get Subscription by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Update Subscription", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"plan\": \"premium\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Cancel Subscription", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Get All Sessions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions"] } } },
+        { "name": "Get Session by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "Update Session", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "End Session", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } }
+      ]
+    },
+    {
+      "name": "Sales Manager",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users"] } } },
+        { "name": "Get User by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Update User Role", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<userId>\",\n  \"role\": \"admin\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Get All Companies", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies"] } } },
+        { "name": "Get Company by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Update Company", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Company Name\",\n  \"description\": \"Updated Description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Delete Company", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Get All Join Requests", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests"] } } },
+        { "name": "Get Join Request by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Approve Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"approved\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Reject Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"rejected\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Delete Join Request", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Get All Subscriptions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions"] } } },
+        { "name": "Get Subscription by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Update Subscription", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"plan\": \"premium\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Cancel Subscription", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Get All Sessions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions"] } } },
+        { "name": "Get Session by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "Update Session", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "End Session", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } }
+      ]
+    },
+    {
+      "name": "Salesman",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users"] } } },
+        { "name": "Get User by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Update User Role", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<userId>\",\n  \"role\": \"admin\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Get All Companies", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies"] } } },
+        { "name": "Get Company by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Update Company", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Company Name\",\n  \"description\": \"Updated Description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Delete Company", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Get All Join Requests", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests"] } } },
+        { "name": "Get Join Request by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Approve Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"approved\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Reject Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"rejected\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Delete Join Request", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Get All Subscriptions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions"] } } },
+        { "name": "Get Subscription by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Update Subscription", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"plan\": \"premium\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Cancel Subscription", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Get All Sessions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions"] } } },
+        { "name": "Get Session by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "Update Session", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "End Session", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } }
+      ]
+    },
+    {
+      "name": "IT Support",
+      "item": [
+        { "name": "Get All Users", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users"] } } },
+        { "name": "Get User by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Update User Role", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<userId>\",\n  \"role\": \"admin\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Delete User", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
+        { "name": "Get All Companies", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies"] } } },
+        { "name": "Get Company by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Update Company", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Company Name\",\n  \"description\": \"Updated Description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Delete Company", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
+        { "name": "Get All Join Requests", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests"] } } },
+        { "name": "Get Join Request by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Approve Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"approved\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Reject Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"rejected\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Delete Join Request", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
+        { "name": "Get All Subscriptions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions"] } } },
+        { "name": "Get Subscription by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Update Subscription", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"plan\": \"premium\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Cancel Subscription", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
+        { "name": "Get All Sessions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions"] } } },
+        { "name": "Get Session by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "Update Session", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
+        { "name": "End Session", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } }
+      ]
+    },
+    {
+      "name": "General Auth/User",
       "item": [
         { "name": "Register", "request": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"TestPassword123\",\n  \"phone\": \"1234567890\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "register"] } } },
         { "name": "Verify Email", "request": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"code\": \"<code-from-email>\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/auth/verify-email", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "auth", "verify-email"] } } },
@@ -71,29 +227,318 @@
       ]
     },
     {
-      "name": "Admin/IT Support",
+      "name": "Sales Funnel",
       "item": [
-        { "name": "Get All Users", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users"] } } },
-        { "name": "Get User by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
-        { "name": "Update User Role", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"userId\": \"<userId>\",\n  \"role\": \"admin\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
-        { "name": "Delete User", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/users/{userId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "users", "{userId}"] } } },
-        { "name": "Get All Companies", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies"] } } },
-        { "name": "Get Company by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
-        { "name": "Update Company", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Updated Company Name\",\n  \"description\": \"Updated Description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
-        { "name": "Delete Company", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/companies/{companyId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "companies", "{companyId}"] } } },
-        { "name": "Get All Join Requests", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests"] } } },
-        { "name": "Get Join Request by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
-        { "name": "Approve Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"approved\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
-        { "name": "Reject Join Request", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"joinRequestId\": \"<joinRequestId>\",\n  \"status\": \"rejected\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
-        { "name": "Delete Join Request", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/join-requests/{joinRequestId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "join-requests", "{joinRequestId}"] } } },
-        { "name": "Get All Subscriptions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions"] } } },
-        { "name": "Get Subscription by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
-        { "name": "Update Subscription", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"plan\": \"premium\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
-        { "name": "Cancel Subscription", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/subscriptions/{subscriptionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "subscriptions", "{subscriptionId}"] } } },
-        { "name": "Get All Sessions", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions"] } } },
-        { "name": "Get Session by ID", "request": { "method": "GET", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
-        { "name": "Update Session", "request": { "method": "PUT", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } },
-        { "name": "End Session", "request": { "method": "DELETE", "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ], "url": { "raw": "http://localhost:5000/api/admin/sessions/{sessionId}", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "admin", "sessions", "{sessionId}"] } } }
+        {
+          "name": "Create/Update Funnel",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"companyId\": \"<companyId>\",\n  \"stages\": [\n    { \"name\": \"No Answer\", \"order\": 1 },\n    { \"name\": \"Follow-Up\", \"order\": 2 }\n  ]\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/funnel", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "funnel"] }
+          }
+        },
+        {
+          "name": "Get Funnel",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/funnel/<companyId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "funnel", "<companyId>"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dynamic Forms",
+      "item": [
+        {
+          "name": "Create/Update Form",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"companyId\": \"<companyId>\",\n  \"name\": \"Lead Qualification\",\n  \"fields\": [\n    { \"label\": \"Budget\", \"type\": \"text\", \"required\": true },\n    { \"label\": \"Decision Maker\", \"type\": \"text\" }\n  ],\n  \"linkedToStage\": \"Meeting Scheduled\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/form", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "form"] }
+          }
+        },
+        {
+          "name": "List Forms",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/form/<companyId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "form", "<companyId>"] }
+          }
+        },
+        {
+          "name": "Submit Form",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"leadId\": \"<leadId>\",\n  \"responses\": { \"Budget\": \"10000\", \"Decision Maker\": \"John Doe\" }\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/form/<formId>/submit", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "form", "<formId>", "submit"] }
+          }
+        },
+        {
+          "name": "Get Submissions by Lead",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/form/submissions/lead/<leadId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "form", "submissions", "lead", "<leadId>"] }
+          }
+        },
+        {
+          "name": "Get Submissions by User",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/form/submissions/user/<userId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "form", "submissions", "user", "<userId>"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lead Management",
+      "item": [
+        {
+          "name": "Create Lead",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"companyId\": \"<companyId>\",\n  \"contact\": { \"name\": \"Lead Name\", \"phone\": \"1234567890\" },\n  \"assignedTo\": \"<userId>\",\n  \"status\": \"New\",\n  \"currentStage\": \"No Answer\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/lead", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead"] }
+          }
+        },
+        {
+          "name": "Assign/Transfer Lead",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"assignedTo\": \"<userId>\",\n  \"reason\": \"Reassignment\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/lead/<leadId>/assign", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "<leadId>", "assign"] }
+          }
+        },
+        {
+          "name": "Update Lead Stage",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"currentStage\": \"Follow-Up\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/lead/<leadId>/stage", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "<leadId>", "stage"] }
+          }
+        },
+        {
+          "name": "Get Lead Details",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/lead/<leadId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "<leadId>"] }
+          }
+        },
+        {
+          "name": "List/Filter Leads",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/lead?companyId=<companyId>&stage=No%20Answer", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead"], "query": [ { "key": "companyId", "value": "<companyId>" }, { "key": "stage", "value": "No Answer" } ] }
+          }
+        },
+        {
+          "name": "Add Note to Lead",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"text\": \"Followed up with client.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/lead/<leadId>/notes", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "<leadId>", "notes"] }
+          }
+        },
+        {
+          "name": "Add Attachment to Lead",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "" }, { "key": "fileName", "type": "text", "value": "Proposal.pdf" } ] },
+            "url": { "raw": "http://localhost:5000/api/lead/<leadId>/attachments", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "<leadId>", "attachments"] },
+            "description": "Uploads the file to Cloudinary and stores the returned URL."
+          }
+        },
+        {
+          "name": "Import Leads (CSV)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "formdata", "formdata": [ { "key": "file", "type": "file", "src": "" } ] },
+            "url": { "raw": "http://localhost:5000/api/lead/import", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "import"] }
+          }
+        },
+        {
+          "name": "Export Leads (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/lead/export?companyId=<companyId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "export"], "query": [ { "key": "companyId", "value": "<companyId>" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Catalog",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"companyId\": \"<companyId>\",\n  \"name\": \"Laptop\",\n  \"price\": 1200,\n  \"description\": \"High-end gaming laptop.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/product", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "product"] }
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/product/<productId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "product", "<productId>"] }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Laptop Pro\",\n  \"price\": 1500,\n  \"description\": \"Professional gaming laptop.\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/product/<productId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "product", "<productId>"] }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/product/<productId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "product", "<productId>"] }
+          }
+        },
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/product?companyId=<companyId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "product"], "query": [ { "key": "companyId", "value": "<companyId>" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotation Management",
+      "item": [
+        {
+          "name": "Create Quotation",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"companyId\": \"<companyId>\",\n  \"leadId\": \"<leadId>\",\n  \"items\": [\n    { \"productId\": \"<productId>\", \"quantity\": 1, \"price\": 1200 },\n    { \"productId\": \"<productId>\", \"quantity\": 2, \"price\": 2000 }\n  ],\n  \"totalAmount\": 5200,\n  \"status\": \"Draft\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/quotation", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "quotation"] }
+          }
+        },
+        {
+          "name": "Get Quotation by ID",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/quotation/<quotationId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "quotation", "<quotationId>"] }
+          }
+        },
+        {
+          "name": "Update Quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"Approved\",\n  \"totalAmount\": 6000\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/quotation/<quotationId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "quotation", "<quotationId>"] }
+          }
+        },
+        {
+          "name": "Approve Quotation",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"quotationId\": \"<quotationId>\",\n  \"status\": \"Approved\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/quotation/<quotationId>/approve", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "quotation", "<quotationId>", "approve"] }
+          }
+        },
+        {
+          "name": "Reject Quotation",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"quotationId\": \"<quotationId>\",\n  \"status\": \"Rejected\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "http://localhost:5000/api/quotation/<quotationId>/reject", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "quotation", "<quotationId>", "reject"] }
+          }
+        },
+        {
+          "name": "Export Quotation (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/quotation/export/csv?quotationId=<quotationId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "quotation", "export", "csv"], "query": [ { "key": "quotationId", "value": "<quotationId>" } ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics (Stub)",
+      "item": [
+        {
+          "name": "Leads by Stage",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/analytics/leads-by-stage", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "analytics", "leads-by-stage"] }
+          }
+        },
+        {
+          "name": "Form Submissions",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/analytics/form-submissions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "analytics", "form-submissions"] }
+          }
+        },
+        {
+          "name": "Assigned Leads",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/analytics/assigned-leads", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "analytics", "assigned-leads"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Export Endpoints",
+      "item": [
+        {
+          "name": "Export Leads (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/lead/export/csv?companyId=<companyId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "lead", "export", "csv"], "query": [ { "key": "companyId", "value": "<companyId>" } ] }
+          }
+        },
+        {
+          "name": "Export Quotations (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/quotation/export/csv?companyId=<companyId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "quotation", "export", "csv"], "query": [ { "key": "companyId", "value": "<companyId>" } ] }
+          }
+        },
+        {
+          "name": "Export Forms (CSV)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer <accessToken>", "type": "text" } ],
+            "url": { "raw": "http://localhost:5000/api/form/export/csv?companyId=<companyId>", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "form", "export", "csv"], "query": [ { "key": "companyId", "value": "<companyId>" } ] }
+          }
+        }
       ]
     }
   ]
